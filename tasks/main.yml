@@ -1,0 +1,17 @@
+---
+- uri:
+    url: https://api.github.com/repos/{{ github_owner }}/{{ github_repo }}/releases/latest
+    return_content: yes
+  register: releases
+
+- get_url:
+    url: https://api.github.com/repos/{{ github_owner }}/{{ github_repo }}/releases/assets/{{ id }}
+    headers: "{{ headers.items()|map('join', ':')|join(',') }}"
+    dest: "{{ asset_path }}"
+    mode: "{{ asset_mode }}"
+    force: yes
+  vars:
+    headers:
+      Accept: application/octet-stream
+    arch: "{{ ansible_system|lower }}-{{ arch_map[ansible_userspace_architecture] }}"
+    id: "{{ releases.json|json_query('assets[?ends_with(@.name, `' ~ arch ~ '`)] | [0].id') }}"

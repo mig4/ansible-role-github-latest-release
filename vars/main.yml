@@ -1,0 +1,5 @@
+---
+# Map GitHub release architectures to Ansible userspace architectures
+arch_map:
+  i386: i386
+  x86_64: amd64
