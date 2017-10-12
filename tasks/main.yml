@@ -13,5 +13,6 @@
   vars:
     headers:
       Accept: application/octet-stream
+    release_data: "{{ releases.json|to_json }}"
     arch: "{{ ansible_system|lower }}-{{ arch_map[ansible_userspace_architecture] }}"
-    id: "{{ releases.json|json_query('assets[?ends_with(@.name, `' ~ arch ~ '`)] | [0].id') }}"
+    id: "{{ release_data|from_json|json_query('assets[?ends_with(@.name, `' ~ arch ~ '`)] | [0].id') }}"
