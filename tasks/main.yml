@@ -6,13 +6,12 @@
 
 - get_url:
     url: https://api.github.com/repos/{{ github_owner }}/{{ github_repo }}/releases/assets/{{ id }}
-    headers: "{{ headers.items()|map('join', ':')|join(',') }}"
+    headers:
+      Accept: application/octet-stream
     dest: "{{ asset_path }}"
     mode: "{{ asset_mode }}"
     force: yes
   vars:
-    headers:
-      Accept: application/octet-stream
     release_data: "{{ releases.json|to_json }}"
     arch: "{{ ansible_system|lower }}-{{ arch_map[ansible_userspace_architecture] }}"
     id: "{{ release_data|from_json|json_query('assets[?ends_with(@.name, `' ~ arch ~ '`)] | [0].id') }}"
